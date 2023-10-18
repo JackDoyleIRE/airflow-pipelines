@@ -16,7 +16,22 @@ from typing import (
 )
 
 class ApiCallOperator(BaseOperator):
+    """
+    Custom Airflow operator to make an API call, retrieve data, and upload it to Google Cloud Storage.
 
+    :param endpoint: The API endpoint URL.
+    :type endpoint: str
+    :param destination_bucket_name: The name of the Google Cloud Storage bucket where data will be uploaded.
+    :type destination_bucket_name: str
+    :param method: The HTTP method for the API call (e.g., 'GET' or 'POST').
+    :type method: str
+    :param http_conn_id: The Airflow connection ID for the HTTP connection.
+    :type http_conn_id: str
+    :param params: Optional parameters to include in the API call.
+    :type params: dict
+    :param kwargs: Other keyword arguments passed to the BaseOperator.
+    :type kwargs: Any
+    """
 
     def __init__(
             self,
@@ -39,6 +54,12 @@ class ApiCallOperator(BaseOperator):
           
 
     def execute(self, context):
+        """
+        Execute the API call, retrieve data, and upload it to Google Cloud Storage.
+
+        :param context: The task execution context.
+        :type context: dict
+        """
         http_hook = HttpHook(method=self.method, http_conn_id=self.http_conn_id)
 
         gcs_hook = GCSHook()
