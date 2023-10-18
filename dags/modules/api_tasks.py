@@ -8,6 +8,7 @@ import requests
 import json
 import logging
 import io
+from datetime import datetime
 from typing import (
     Dict,
     Optional,
@@ -35,8 +36,7 @@ class ApiCallOperator(BaseOperator):
         self.params = params
         
         
-       
-        
+          
 
     def execute(self, context):
         http_hook = HttpHook(method=self.method, http_conn_id=self.http_conn_id)
@@ -84,7 +84,7 @@ class ApiCallOperator(BaseOperator):
         
         gcs_hook.upload(
             bucket_name=self.destination_bucket_name,
-            object_name='test_data_json_2',
+            object_name= f'test_data_json_{datetime.now().strftime("%Y%m%d")}',
             data=buffer.getvalue(),
             mime_type="application/json",
             timeout=120

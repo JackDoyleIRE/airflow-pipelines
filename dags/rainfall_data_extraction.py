@@ -16,8 +16,8 @@ BQ_TABLE = os.getenv("bq_project_table_name")
 #############
 # Variables #
 #############
-START_DATE = "2023-01-01"
-END_DATE = "2023-01-01"
+START_DATE = "2023-02-01"
+END_DATE = "2023-03-01"
 STATION_ID = ["SDF"]
 
 STATION_ID_STR = ",".join(STATION_ID)
@@ -71,13 +71,20 @@ with DAG(
     load_gcs_to_bq = GCSToBigQueryOperator(
     task_id='load_gcs_to_bq',
     bucket=BUCKET_NAME,
-    source_objects=['test_data_json_2'],
+    source_objects=[f'test_data_json_{datetime.now().strftime("%Y%m%d")}'],
     destination_project_dataset_table=BQ_TABLE,
     schema_fields=[
-        {'name': 'field1', 'type': 'STRING', 'mode': 'NULLABLE'},
-        {'name': 'field2', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+        {'name': 'stationId', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'durCode', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'SENSOR_NUM', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+        {'name': 'sensorType', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'date', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'obsDate', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'value', 'type': 'FLOAT', 'mode': 'NULLABLE'},
+        {'name': 'dataFlag', 'type': 'STRING', 'mode': 'NULLABLE'},
+        {'name': 'units', 'type': 'STRING', 'mode': 'NULLABLE'},
     ],
-    write_disposition='WRITE_TRUNCATE',
+    write_disposition='WRITE_APPEND',
     source_format='NEWLINE_DELIMITED_JSON',
     project_id=PROJECT_ID
 
